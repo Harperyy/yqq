@@ -43,7 +43,8 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_seeLt=new JMenuItem("限时促销");
 
     private JMenuItem  menuItem_changePw=new JMenuItem("修改密码");
-    private JMenuItem  menuItem_userDetail=new JMenuItem("个人资料");
+    private JMenuItem  menuItem_cusDetail=new JMenuItem("个人资料");
+    private JMenuItem  menuItem_adDetail=new JMenuItem("个人资料");
     private JMenuItem  menuItem_vip=new JMenuItem("vip会员");
 
     private JMenuItem  menuItem_goods=new JMenuItem("商品信息管理");
@@ -71,8 +72,8 @@ public class FrmMain extends JFrame implements ActionListener {
             menubar.add(lab1);
             menu_Manager.add(menuItem_changePw);
             menuItem_changePw.addActionListener(this);
-            menu_Manager.add(menuItem_userDetail);
-            menuItem_userDetail.addActionListener(this);
+            menu_Manager.add(menuItem_adDetail);
+            menuItem_adDetail.addActionListener(this);
             menubar.add(menu_Manager);
             menu_d.add(menuItem_goods);
             menuItem_goods.addActionListener(this);
@@ -98,8 +99,8 @@ public class FrmMain extends JFrame implements ActionListener {
             menubar.add(lab1);
             menu_Manager.add(menuItem_changePw);
             menuItem_changePw.addActionListener(this);
-            menu_Manager.add(menuItem_userDetail);
-            menuItem_userDetail.addActionListener(this);
+            menu_Manager.add(menuItem_cusDetail);
+            menuItem_cusDetail.addActionListener(this);
             menu_Manager.add(menuItem_vip);
             menuItem_vip.addActionListener(this);
             menubar.add(menu_Manager);
@@ -150,7 +151,11 @@ public class FrmMain extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == this.menuItem_adDetail){
+            FrmAdDetail dlg = new FrmAdDetail(this,"个人资料",true);
+            dlg.setVisible(true);
 
+        }
 
     }
 }
