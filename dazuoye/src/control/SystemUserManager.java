@@ -150,19 +150,22 @@ public class SystemUserManager {
                 }
         }
     }
-    public List<BeanAdministrater> loadAllAd()throws BaseException{
+    public BeanAdministrater loadAllAd()throws BaseException{
         Connection conn = null;
-        List<BeanAdministrater> re = new ArrayList<>();
+        System.out.println(currentUser);
+        if(currentUser==null) throw  new BusinessException("请先登录");
+        BeanAdministrater b = new BeanAdministrater();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from administrater order by ad_id";
+            String sql = "select * from administrater where ad_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,(new SystemUserManager()).currentUser.getId());
             java.sql.ResultSet rs = pst.executeQuery();
             while(rs.next()){
-                BeanAdministrater b = new BeanAdministrater();
+
                 b.setAd_id(rs.getInt(1));
                 b.setAd_name(rs.getString(2));
-                re.add(b);
+                System.out.println(b.getAd_id());
             }
 
         }catch (SQLException e) {
@@ -178,18 +181,20 @@ public class SystemUserManager {
                     e.printStackTrace();
                 }
         }
-        return re;
+        return b;
     }
-    public List<BeanCustomer> loadAllCus()throws BaseException{
+    public BeanCustomer loadAllCus()throws BaseException{
         Connection conn = null;
-        List<BeanCustomer> re = new ArrayList<>();
+        if(currentUser==null) throw  new BusinessException("请先登录");
+        BeanCustomer b = new BeanCustomer();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from customer order by cus_id";
+            String sql = "select * from customer where cus_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,(new SystemUserManager()).currentUser.getId());
             java.sql.ResultSet rs = pst.executeQuery();
             while(rs.next()){
-                BeanCustomer b = new BeanCustomer();
+
                 b.setCus_id(rs.getInt(1));
                 b.setCus_name(rs.getString(2));
                 b.setCus_sex(rs.getString(4));
@@ -199,7 +204,9 @@ public class SystemUserManager {
                 b.setCus_reg_time(rs.getTimestamp(8));
                 b.setCus_vip(rs.getString(9));
                 b.setCus_vip_end_time(rs.getTimestamp(10));
-                re.add(b);
+                rs.close();
+                pst.close();
+
             }
 
         }catch (SQLException e) {
@@ -215,7 +222,7 @@ public class SystemUserManager {
                     e.printStackTrace();
                 }
         }
-        return re;
+        return b;
     }
     public void updateAd(String name) throws BaseException{
         if("".equals(name)||name==null) throw new BusinessException("请输入新的用户名");
@@ -249,8 +256,7 @@ public class SystemUserManager {
                 }
         }
     }
-    public void updateCus(String name,String phone,String email,String city) throws BaseException{
-        if("".equals(name)||name==null) throw new BusinessException("请输入新的用户名");
+    public void updateCus(String phone,String email,String city) throws BaseException{
         if("".equals(phone)||phone==null) throw new BusinessException("请输入电话号码");
         if(phone.length()!=13) throw  new BusinessException("请输入正确的手机号");
         if("".equals(email)||email==null) throw new BusinessException("请输入邮箱");
@@ -266,13 +272,12 @@ public class SystemUserManager {
             if(rs.next()) throw new BusinessException("该用户名已被使用");
             rs.close();
             pst.close();
-            sql = "update customer set cus_name=?,cus_phone=?,cus_email=?,cus_city=? where cus_id=?";
+            sql = "update customer set cus_phone=?,cus_email=?,cus_city=? where cus_id=?";
             pst = conn.prepareStatement(sql);
-            pst.setString(1,name);
-            pst.setString(2,phone);
-            pst.setString(3,email);
-            pst.setString(4,city);
-            pst.setInt(5,(new SystemUserManager()).currentUser.getId());
+            pst.setString(1,phone);
+            pst.setString(2,email);
+            pst.setString(3,city);
+            pst.setInt(4,(new SystemUserManager()).currentUser.getId());
             pst.execute();
 
         }catch (SQLException e) {
@@ -325,6 +330,33 @@ public class SystemUserManager {
             pst.setString(1,pwd);
             pst.setInt(2,(new SystemUserManager()).currentUser.getId());
             pst.execute();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+    public void deleteUser() throws BaseException{
+        Connection conn = null;
+
+        try{
+            conn = DBUtil.getConnection();
+            String sql;
+            if(currentUser.getType()=="管理员")
+                sql = "delete from administrater where ad_id = ?";
+            else sql = "delete from customer where cus_id = ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,currentUser.getId());
+            pst.execute();
+            currentUser = null;
         }catch (SQLException e) {
             e.printStackTrace();
             throw new DbException(e);
