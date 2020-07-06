@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FrmRegCus extends JDialog implements ActionListener {
+public class FrmCusUp extends JDialog implements ActionListener {
     private JPanel toolBar1 = new JPanel();
     private JPanel toolBar2 = new JPanel();
     private JPanel toolBar3 = new JPanel();
@@ -28,12 +28,12 @@ public class FrmRegCus extends JDialog implements ActionListener {
     private JTextField edtEmail = new JTextField("（123@qq.com）",20);
     private JTextField edtCity = new JTextField("（杭州）",10);
 
-    private JButton btnOk = new JButton("注册");
-    private JButton btnNext = new JButton("下次再说");
+    private JButton btnOk = new JButton("修改");
+    private JButton btnNext = new JButton("取消");
 
     private String Sex;
 
-    public FrmRegCus(Dialog f, String s, boolean b){
+    public FrmCusUp(Dialog f, String s, boolean b){
         super(f, s, b);
         this.setLayout(new GridLayout(5,1));
         toolBar1.setLayout(new FlowLayout(FlowLayout.LEFT));

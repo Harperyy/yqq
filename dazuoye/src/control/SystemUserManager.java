@@ -191,7 +191,7 @@ public class SystemUserManager {
             conn = DBUtil.getConnection();
             String sql = "select * from customer where cus_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1,(new SystemUserManager()).currentUser.getId());
+            pst.setInt(1,currentUser.getId());
             java.sql.ResultSet rs = pst.executeQuery();
             while(rs.next()){
 
@@ -204,8 +204,7 @@ public class SystemUserManager {
                 b.setCus_reg_time(rs.getTimestamp(8));
                 b.setCus_vip(rs.getString(9));
                 b.setCus_vip_end_time(rs.getTimestamp(10));
-                rs.close();
-                pst.close();
+
 
             }
 
@@ -294,13 +293,15 @@ public class SystemUserManager {
                 }
         }
     }
-    public void upPwdAd(String pwd) throws BaseException{
+    public void upPwdAd(String pwd,String pwd2) throws BaseException{
         if(pwd==null||"".equals(pwd)) throw new BusinessException("请输入新的密码");
+
         if(pwd.length()<8) throw new BusinessException("密码至少八位");
+        if(!pwd.equals(pwd2) )throw new BusinessException("密码不一致");
         Connection conn  = null;
         try{
             conn = DBUtil.getConnection();
-            String sql = "updqte administrater set ad_pwd=? where ad_id=?";
+            String sql = "update administrater set ad_pwd=? where ad_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1,pwd);
             pst.setInt(2,(new SystemUserManager()).currentUser.getId());
@@ -319,13 +320,15 @@ public class SystemUserManager {
                 }
         }
     }
-    public void upPwdCus(String pwd) throws BaseException{
-        if(pwd==null||"".equals(pwd)) throw new BusinessException("请输入新的密码");
+    public void upPwdCus(String pwd,String pwd2) throws BaseException{
+        if(pwd==null || "".equals(pwd))
+            throw new BusinessException("请输入新的密码");
         if(pwd.length()<8) throw new BusinessException("密码至少八位");
+        if(!pwd.equals(pwd2) )throw new BusinessException("密码不一致");
         Connection conn  = null;
         try{
             conn = DBUtil.getConnection();
-            String sql = "updqte customer set cus_pwd=? where cus_id=?";
+            String sql = "update customer set cus_pwd=? where cus_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1,pwd);
             pst.setInt(2,(new SystemUserManager()).currentUser.getId());
@@ -357,6 +360,36 @@ public class SystemUserManager {
             pst.setInt(1,currentUser.getId());
             pst.execute();
             currentUser = null;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+    public void setVIP(int type) throws BaseException{
+        if(type == -1) throw new BusinessException("请选择需要购买的vip类型");
+        Connection conn = null;
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "update Customer set cus_vip='是',cus_vip_end_time=? where cus_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            long time = System.currentTimeMillis();
+            long t1 = 30*24*60*60*1000;
+            long t2 = t1*3;
+            long t3 = t1*12;
+            if(type==0) pst.setTimestamp(1, new java.sql.Timestamp(time+t1));
+            else if(type==1) pst.setTimestamp(1,new java.sql.Timestamp(time+t2));
+            else pst.setTimestamp(1,new java.sql.Timestamp(time+t3));
+            pst.setInt(2,SystemUserManager.currentUser.getId());
+            pst.execute();
         }catch (SQLException e) {
             e.printStackTrace();
             throw new DbException(e);

@@ -89,9 +89,7 @@ public class FrmMain extends JFrame implements ActionListener {
             menu_fr.add(menuItem_cou);
             menuItem_cou.addActionListener(this);
             menubar.add(menu_fr);
-            menu_ch.add(menuItem_seeLt);
-            menuItem_seeLt.addActionListener(this);
-            menubar.add(menu_ch);
+
 
 
         }
@@ -156,6 +154,17 @@ public class FrmMain extends JFrame implements ActionListener {
             dlg.setVisible(true);
 
         }
-
+        else if(e.getSource() == this.menuItem_cusDetail){
+            FrmCusDetail dlg = new FrmCusDetail(this,"个人资料",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_changePw){
+            FrmUpPwd dlg = new FrmUpPwd(this,"修改密码",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_vip){
+            FrmVIP dlg = new FrmVIP(this,"vip",true);
+            dlg.setVisible(true);
+        }
     }
 }

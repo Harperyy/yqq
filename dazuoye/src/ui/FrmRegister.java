@@ -73,6 +73,10 @@ public class FrmRegister extends JDialog implements ActionListener {
 
 
         this.setSize(350, 230);
+        double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        this.setLocation((int) (width - this.getWidth()) / 2,
+                (int) (height - this.getHeight()) / 2);
         this.btnCancel.addActionListener(this);
         this.btnOk.addActionListener(this);
         this.randioButton1.addActionListener(this);
