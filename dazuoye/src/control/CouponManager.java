@@ -124,21 +124,14 @@ public class CouponManager {
 
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from freshtype where TF_id=?";
+            String sql = "select * from coupon where cou_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             java.sql.ResultSet rs = pst.executeQuery();
             if(!rs.next()) throw new BusinessException("请选择要删除的条目");
             rs.close();
             pst.close();
-            sql = "select * from fresh where tf_id=?";
-            pst = conn.prepareStatement(sql);
-            pst.setInt(1,id);
-            rs = pst.executeQuery();
-            if(rs.next()) throw new BusinessException("给类别下已有食材，无法删除");
-            rs.close();
-            pst.close();
-            sql = "delete from freshtype where tf_id=?";
+            sql = "delete from coupon where cou_id=?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             pst.execute();
