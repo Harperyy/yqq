@@ -79,7 +79,7 @@ public class CouponManager {
                 }
         }
     }
-    public void UpCou(String text, double price, double dis, String start,String end)throws BaseException{
+    public void UpCou(int id,String text, double price, double dis, String start,String end)throws BaseException{
         Connection conn = null;
         if("".equals(text)||text==null) throw new BusinessException("内容不能为空");
         if(start==null) throw new BusinessException("开始时间不能为空");
@@ -88,15 +88,21 @@ public class CouponManager {
         //if("".equals(text)||text==null) throw new BusinessException("内容不能为空");
         try{
             conn = DBUtil.getConnection();
-            String sql = "update  Coupon set cp_text=?,cp_need_price=?,cp_discount=?,cp_start_time=?,cp_end_time=? where ad_id=?";
-
+            String sql = "select * from Coupon where cus_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(!rs.next()) throw new BusinessException("请选择要修改的条目");
+            rs.close();
+            pst.close();
+            sql = "update  Coupon set cp_text=?,cp_need_price=?,cp_discount=?,cp_start_time=?,cp_end_time=? where cou_id=?";
+            pst = conn.prepareStatement(sql);
             pst.setString(1,text);
             pst.setDouble(2,price);
             pst.setDouble(3,dis);
             pst.setTimestamp(4,java.sql.Timestamp.valueOf(start));
             pst.setTimestamp(5,java.sql.Timestamp.valueOf(end));
-            pst.setInt(6,SystemUserManager.currentUser.getId());
+            pst.setInt(6,id);
             pst.execute();
 
         }catch (SQLException e) {
@@ -113,14 +119,14 @@ public class CouponManager {
                 }
         }
     }
-    public void DeleteCou()throws BaseException{
+    public void DeleteCou(int id)throws BaseException{
         Connection conn = null;
 
         try{
             conn = DBUtil.getConnection();
-            String sql = "delete from Coupon where ad_id=?";
+            String sql = "delete from Coupon where cou_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1,SystemUserManager.currentUser.getId());
+            pst.setInt(1,id);
             pst.execute();
 
         }catch (SQLException e) {
