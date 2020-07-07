@@ -1,5 +1,6 @@
 package control;
 
+import model.BeanAdPerchase;
 import util.BaseException;
 import util.BusinessException;
 import util.DBUtil;
@@ -7,6 +8,8 @@ import util.DbException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdPerchaseManager {
     public void add(int id,int count) throws BaseException{
@@ -100,5 +103,46 @@ public class AdPerchaseManager {
                     e.printStackTrace();
                 }
         }
+    }
+    public List<BeanAdPerchase> query(String name, int type)throws BaseException{
+        Connection conn = null;
+        List<BeanAdPerchase> re = new ArrayList<>();
+        if(type==-1)throw  new BusinessException("请选择订单类型");
+        try{
+            conn = DBUtil.getConnection();
+            String sql;
+            java.sql.PreparedStatement pst;
+            if(type==0) sql = "select a.sp_id,f.fre_name,a.count,a.state from fresh f,administraterperchase a where f.fre_id=a.fre_id and a.state='已下单' and f.fre_name=?";
+            else if(type==1)sql = "select a.sp_id,f.fre_name,a.count,a.state from fresh f,administraterperchase a where f.fre_id=a.fre_id and a.state='已在途'and f.fre_name=?";
+            else if(type==2)sql = "select a.sp_id,f.fre_name,a.count,a.state from fresh f,administraterperchase a where f.fre_id=a.fre_id and a.state='已在库'and f.fre_name=?";
+            else sql = "select a.sp_id,f.fre_name,a.count,a.state from fresh f,administraterperchase a where f.fre_id=a.fre_id and f.fre_name=?";
+            //sql = "update fresh set fre_count = fre_count+? where fre_id =?";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+name+"%");
+            java.sql.ResultSet rs=pst.executeQuery();
+            while(rs.next()){
+                BeanAdPerchase b = new BeanAdPerchase();
+                b.setSp_id(rs.getInt(1));
+                b.setName(rs.getString(2));
+                b.setSp_count(rs.getInt(3));
+                b.setSp_state(rs.getString(4));
+                re.add(b);
+            }
+
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
     }
 }

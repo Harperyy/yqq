@@ -49,7 +49,7 @@ public class FrmMain extends JFrame implements ActionListener {
 
     private JMenuItem  menuItem_goods=new JMenuItem("商品信息管理");
     private JMenuItem  menuItem_pc=new JMenuItem("商品采购管理");
-    private JMenuItem  menuItem_fr=new JMenuItem("生鲜信息管理");
+    private JMenuItem  menuItem_fr=new JMenuItem("生鲜类别管理");
 
 
     private JMenuItem  menuItem_lt=new JMenuItem("限时促销管理");
