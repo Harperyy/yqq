@@ -94,7 +94,7 @@ public class FrmMain extends JFrame implements ActionListener {
 
         }
         else{
-            menubar.add(lab1);
+            menubar.add(lab2);
             menu_Manager.add(menuItem_changePw);
             menuItem_changePw.addActionListener(this);
             menu_Manager.add(menuItem_cusDetail);
