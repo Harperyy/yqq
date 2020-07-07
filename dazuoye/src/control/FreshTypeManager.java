@@ -121,7 +121,7 @@ public class FreshTypeManager {
             if(!rs.next()) throw new BusinessException("请选择要删除的条目");
             rs.close();
             pst.close();
-            sql = "select * from fresh where tf_id=?";
+            sql = "select * from fresh where tf_id=? and fre_count<=0";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             rs = pst.executeQuery();

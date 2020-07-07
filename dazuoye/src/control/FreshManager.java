@@ -50,13 +50,13 @@ public class FreshManager {
         }
         return re;
     }
-    public void addFre(String name,double price,double vip_p,int count,double size,String remark,int tf_id)throws BaseException{
+    public void addFre(String name,double price,double vip_p,double size,String remark,int tf_id)throws BaseException{
         Connection conn = null;
         if("".equals(name)||name==null) throw new BusinessException("名字不能为空");
         if("".equals(remark)||remark==null) throw new BusinessException("描述不能为空");
         if(price<=0) throw new BusinessException("价格必须大于0");
         if(vip_p<=0)throw new BusinessException("vip价格必须大于0");
-        if(count<=0)throw new BusinessException("数量必须大于0");
+        //if(count<=0)throw new BusinessException("数量必须大于0");
         if(size<=0)throw new BusinessException("规格必须大于0");
 
 
@@ -68,15 +68,15 @@ public class FreshManager {
             pst.setInt(1,tf_id);
             java.sql.ResultSet rs = pst.executeQuery();
             if(!rs.next()) throw new BusinessException("此商品类别不存在，无法添加没有");
-            sql = "insert into freshtype(Fre_name,Fre_price,Fre_vip_price,Fre_count,Fre_size,Fre_remark,FT_id) values (?,?,?,?,?,?,?)";
+            sql = "insert into freshtype(Fre_name,Fre_price,Fre_vip_price,Fre_count,Fre_size,Fre_remark,FT_id) values (?,?,?,0,?,?,?)";
             pst = conn.prepareStatement(sql);
             pst.setString(1,name);
             pst.setDouble(2,price);
             pst.setDouble(3,vip_p);
-            pst.setInt(4,count);
-            pst.setDouble(5,size);
-            pst.setString(6,remark);
-            pst.setInt(7,tf_id);
+            //pst.setInt(4,count);
+            pst.setDouble(4,size);
+            pst.setString(5,remark);
+            pst.setInt(6,tf_id);
             pst.execute();
 
         }catch (SQLException e) {
@@ -180,21 +180,28 @@ public class FreshManager {
             }
             rs.close();
             pst.close();
-            sql = "select * from discount_fresh where fre_id=?";
+            sql = "select * from discount_fresh where fre_id=?and df_end_time>now() and df_start_time<now()";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             rs = pst.executeQuery();
             if(rs.next()) throw new BusinessException("该商品已参加满减活动，暂时无法删除");
             rs.close();
             pst.close();
-            sql = "select * from limitedtimediscount where fre_id=?";
+            sql = "select * from limitedtimediscount where fre_id=? and lmd_end_time>now() and lmd_start_time<now()";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             rs = pst.executeQuery();
             if(rs.next()) throw new BusinessException("该商品已参与促销，暂时无法删除");
             rs.close();
             pst.close();
-            sql = "select * from orderdetail where fre_id=?";
+            sql = "select * from orderdetail o1,orders o2 where o1.ord_id=o2.ord_id and o2.fre_id=? and o1.ord_state!='交易成功'";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            rs = pst.executeQuery();
+            if(rs.next()) throw new BusinessException("该商品已有订单，暂时无法删除");
+            rs.close();
+            pst.close();
+            sql = "select * from administraterperchase where fre_id=? and sp_state!='已在库'";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             rs = pst.executeQuery();
