@@ -1,10 +1,10 @@
 package ui;
 
+import control.DiscountManager;
 import control.FreshManager;
-import control.FreshTypeManager;
 import control.SystemUserManager;
+import model.BeanDiscount;
 import model.BeanFresh;
-import model.BeanFreshType;
 import util.BaseException;
 
 import javax.swing.*;
@@ -16,29 +16,28 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class FrmFresh extends JDialog implements ActionListener {
+public class FrmDiscount extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
-    private JButton btnAdd = new JButton("添加商品");
-    private JButton btnResetPwd = new JButton("修改商品信息");
-    private JButton btnDelete = new JButton("删除商品");
+    private JButton btnAdd = new JButton("添加满减项目");
+    //private JButton btnResetPwd = new JButton("修改商品信息");
+    private JButton btnDelete = new JButton("删除满减项目");
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","名称","原价","会员价","数量","规格","描述","类别编号"};
+    private Object tblTitle[]={"编号","内容","使用数量","折扣","开始时间","结束时间"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
     private void reloadUserTable(){
         try {
-            List<BeanFresh> users=(new FreshManager()).loadAll();
-            tblData =new Object[users.size()][8];
+            List<BeanDiscount> users=(new DiscountManager()).loadAll();
+            tblData =new Object[users.size()][6];
             for(int i=0;i<users.size();i++){
-                tblData[i][0]=users.get(i).getFre_id();
-                tblData[i][1]=users.get(i).getFre_name();
-                tblData[i][2]=users.get(i).getFre_price();
-                tblData[i][3]=users.get(i).getFre_vip_price();
-                tblData[i][4]=users.get(i).getFre_count();
-                tblData[i][5]=users.get(i).getFre_size();
-                tblData[i][6]=users.get(i).getFre_remark();
-                tblData[i][7]=users.get(i).getFp_id();
+                tblData[i][0]=users.get(i).getDisc_id();
+                tblData[i][1]=users.get(i).getDisc_text();
+                tblData[i][2]=users.get(i).getCount();
+                tblData[i][3]=users.get(i).getDisc_discount();
+                tblData[i][4]=users.get(i).getDisc_start_time();
+                tblData[i][5]=users.get(i).getDisc_end_time();
+
 
             }
             tablmod.setDataVector(tblData,tblTitle);
@@ -50,7 +49,7 @@ public class FrmFresh extends JDialog implements ActionListener {
         }
     }
 
-    public FrmFresh(Frame f, String s, boolean b) {
+    public FrmDiscount(Frame f, String s, boolean b) {
         super(f, s, b);
 
         if(SystemUserManager.currentUser==null) {
@@ -59,7 +58,7 @@ public class FrmFresh extends JDialog implements ActionListener {
         else{
             toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar.add(btnAdd);
-            toolBar.add(btnResetPwd);
+
             toolBar.add(this.btnDelete);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
@@ -78,7 +77,7 @@ public class FrmFresh extends JDialog implements ActionListener {
         this.validate();
 
         this.btnAdd.addActionListener(this);
-        this.btnResetPwd.addActionListener(this);
+        //this.btnResetPwd.addActionListener(this);
         this.btnDelete.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -91,7 +90,7 @@ public class FrmFresh extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         if(e.getSource()==this.btnAdd){
-            FrmAddFresh dlg=new FrmAddFresh(this,"添加商品",true);
+            FrmAddDisc dlg=new FrmAddDisc(this,"添加满减项目",true);
             dlg.setVisible(true);
             //刷新表格
             this.reloadUserTable();
@@ -100,13 +99,13 @@ public class FrmFresh extends JDialog implements ActionListener {
         else if(e.getSource()==this.btnDelete){
             int i=this.userTable.getSelectedRow();
             if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,  "请选择满减项目","提示",JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if(JOptionPane.showConfirmDialog(this,"确定删除吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
                 int userid= (int) this.tblData[i][0];
                 try {
-                    (new FreshManager()).DeleteFre(userid);
+                    (new DiscountManager()).DeleteDisc(userid);
                     this.reloadUserTable();
                 } catch (BaseException e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
@@ -114,19 +113,7 @@ public class FrmFresh extends JDialog implements ActionListener {
 
             }
         }
-        else if(e.getSource()==this.btnResetPwd){
-            int i=this.userTable.getSelectedRow();
-            if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            //FreshManager.currentFre.setFre_id((int) this.tblData[i][0]);
-            FrmUpFresh dlg=new FrmUpFresh(this,"修改商品",true,(int) this.tblData[i][0]);
-            dlg.setVisible(true);
-            //刷新表格
-            this.reloadUserTable();
 
-        }
     }
 }
 

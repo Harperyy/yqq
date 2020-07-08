@@ -134,6 +134,11 @@ public class DiscountManager {
             if(!rs.next()) throw new BusinessException("请选择要删除的条目");
             rs.close();
             pst.close();
+            sql = "delete from discount_fresh where disc=?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            pst.execute();
+            pst.close();
             sql = "delete from discount where disc_id=?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);

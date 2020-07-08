@@ -178,5 +178,17 @@ public class FrmMain extends JFrame implements ActionListener {
             FrmAP dlg = new FrmAP(this,"商品采购管理",true);
             dlg.setVisible(true);
         }
+        else if(e.getSource() == this.menuItem_cou){
+            FrmCoupon dlg = new FrmCoupon(this,"优惠券管理",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_d){
+            FrmDiscount dlg = new FrmDiscount(this,"满减管理",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_lt){
+            FrmLTD dlg = new FrmLTD(this,"限时促销管理",true);
+            dlg.setVisible(true);
+        }
     }
 }
