@@ -14,8 +14,8 @@ public class FrmMain extends JFrame implements ActionListener {
     private JLabel lab1 = new JLabel("管理员");
     private JLabel lab2 = new JLabel("用户");
     private JMenu menu_Manager=new JMenu("个人中心");
-    private JMenu menu_d=new JMenu("优惠管理");
-    private JMenu menu_fr=new JMenu("商品管理");
+    private JMenu menu_d=new JMenu("商品管理");
+    private JMenu menu_fr=new JMenu("优惠管理");
     private JMenu menu_e=new JMenu("评价中心");
     private JMenu menu_od=new JMenu("我的订单");
     private JMenu menu_me=new JMenu("菜谱中心");
@@ -164,6 +164,18 @@ public class FrmMain extends JFrame implements ActionListener {
         }
         else if(e.getSource() == this.menuItem_vip){
             FrmVIP dlg = new FrmVIP(this,"vip",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_fr){
+            FrmFreshType dlg = new FrmFreshType(this,"生鲜类别管理",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_goods){
+            FrmFresh dlg = new FrmFresh(this,"商品信息管理",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_pc){
+            FrmAP dlg = new FrmAP(this,"商品采购管理",true);
             dlg.setVisible(true);
         }
     }

@@ -8,14 +8,14 @@ public class BeanFresh {
     private int Fre_count;
     private double Fre_size;
     private String Fre_remark;
-    private int tf_id;
+    private int fp_id;
 
-    public int getTf_id() {
-        return tf_id;
+    public int getFp_id() {
+        return fp_id;
     }
 
-    public void setTf_id(int tf_id) {
-        this.tf_id = tf_id;
+    public void setFp_id(int tf_id) {
+        this.fp_id = tf_id;
     }
 
     public double getFre_price() {

@@ -12,6 +12,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdPerchaseManager {
+    public List<BeanAdPerchase> loadAll()throws BaseException{
+        Connection conn = null;
+        List<BeanAdPerchase> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select a.sp_id,f.fre_id,a.sp_count,a.sp_state,f.fre_name from administraterperchase a,fresh f where a.fre_id=f.fre_id ";
+
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            java.sql.ResultSet rs =  pst.executeQuery();
+            while (rs.next()){
+                BeanAdPerchase b = new BeanAdPerchase();
+                b.setSp_id(rs.getInt(1));
+                b.setFre_id(rs.getInt(2));
+                b.setSp_count(rs.getInt(3));
+                b.setSp_state(rs.getString(4));
+                b.setName(rs.getString(5));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
     public void add(int id,int count) throws BaseException{
         Connection conn = null;
         if(count<=0) throw  new BusinessException("采购数量必须大于0");
@@ -23,7 +56,7 @@ public class AdPerchaseManager {
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             java.sql.ResultSet rs = pst.executeQuery();
-            if(!rs.next()) throw new BusinessException("没有该类食材");
+            if(!rs.next()){ throw new BusinessException("没有该类食材");}
             sql = "insert into administraterperchase(fre_id,sp_count,sp_state) values (?,?,'已下单')";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);

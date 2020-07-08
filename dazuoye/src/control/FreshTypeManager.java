@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FreshTypeManager {
+    public  static BeanFreshType currentFP=null;
     public List<BeanFreshType> loadAll()throws BaseException {
         Connection conn = null;
         List<BeanFreshType> re = new ArrayList<>();
@@ -44,7 +45,7 @@ public class FreshTypeManager {
         }
         return re;
     }
-    public void addFT(String name,String remark)throws BaseException{
+    public void addFP(String name,String remark)throws BaseException{
         Connection conn = null;
         if("".equals(name)||name==null) throw new BusinessException("名字不能为空");
         if("".equals(remark)||remark==null) throw new BusinessException("描述不能为空");
@@ -72,7 +73,7 @@ public class FreshTypeManager {
                 }
         }
     }
-    public void UpTF(int id,String name,String remark)throws BaseException{
+    public void UpFP(int id,String name,String remark)throws BaseException{
         Connection conn = null;
         if("".equals(name)||name==null) throw new BusinessException("名字不能为空");
         if("".equals(remark)||remark==null) throw new BusinessException("描述不能为空");
@@ -80,14 +81,14 @@ public class FreshTypeManager {
         //if("".equals(text)||text==null) throw new BusinessException("内容不能为空");
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from freshtype where TF_id=?";
+            String sql = "select * from freshtype where FP_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             java.sql.ResultSet rs = pst.executeQuery();
             if(!rs.next()) throw new BusinessException("请选择要修改的条目");
             rs.close();
             pst.close();
-            sql = "update  freshtype set FP_name=?,FP_remark=?where TF_id=?";
+            sql = "update  freshtype set FP_name=?,FP_remark=?where FP_id=?";
             pst = conn.prepareStatement(sql);
             pst.setString(1,name);
             pst.setString(2,remark);
@@ -109,26 +110,26 @@ public class FreshTypeManager {
                 }
         }
     }
-    public void DeleteTF(int id)throws BaseException{
+    public void DeleteFP(int id)throws BaseException{
         Connection conn = null;
 
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from freshtype where TF_id=?";
+            String sql = "select * from freshtype where fP_id=?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             java.sql.ResultSet rs = pst.executeQuery();
             if(!rs.next()) throw new BusinessException("请选择要删除的条目");
             rs.close();
             pst.close();
-            sql = "select * from fresh where tf_id=? and fre_count<=0";
+            sql = "select * from fresh where fp_id=? and fre_count<=0";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             rs = pst.executeQuery();
             if(rs.next()) throw new BusinessException("给类别下已有食材，无法删除");
             rs.close();
             pst.close();
-            sql = "delete from freshtype where tf_id=?";
+            sql = "delete from freshtype where fp_id=?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             pst.execute();
