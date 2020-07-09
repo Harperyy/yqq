@@ -16,7 +16,7 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_Manager=new JMenu("个人中心");
     private JMenu menu_d=new JMenu("商品管理");
     private JMenu menu_fr=new JMenu("优惠管理");
-    private JMenu menu_e=new JMenu("评价中心");
+    private JMenu menu_e=new JMenu("我的评价");
     private JMenu menu_od=new JMenu("我的订单");
     private JMenu menu_me=new JMenu("菜谱中心");
     private JMenu menu_cu=new JMenu("消费中心");
@@ -26,8 +26,8 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_allGoods=new JMenuItem("所有商品");
     private JMenuItem  menuItem_clGoods=new JMenuItem("所有分类");
 
-    private JMenuItem  menuItem_allEv=new JMenuItem("评价查询");
-    private JMenuItem  menuItem_writeEv=new JMenuItem("写评价");
+    private JMenuItem  menuItem_allEv=new JMenuItem("已评价");
+    private JMenuItem  menuItem_writeEv=new JMenuItem("未评价");
 
     private JMenuItem  menuItem_allOd = new JMenuItem("所有订单");
     private JMenuItem  menuItem_notPay=new JMenuItem("代付款");
@@ -110,6 +110,7 @@ public class FrmMain extends JFrame implements ActionListener {
             menu_e.add(menuItem_allEv);
             menuItem_allEv.addActionListener(this);
             menu_e.add(menuItem_writeEv);
+            menuItem_writeEv.addActionListener(this);
             menubar.add(menu_e);
             menu_od.add(menuItem_allOd);
             menuItem_allOd.addActionListener(this);
@@ -205,11 +206,20 @@ public class FrmMain extends JFrame implements ActionListener {
             dlg.setVisible(true);
         }
         else if(e.getSource() == this.menuItem_seeDis){
-            FrmCusCou dlg = new FrmCusCou(this,"满减",true);
+            FrmCusDis dlg = new FrmCusDis(this,"满减",true);
             dlg.setVisible(true);
         }
         else if(e.getSource() == this.menuItem_seeLt){
-            FrmCusCou dlg = new FrmCusCou(this,"限时促销",true);
+            FrmCusLTD dlg = new FrmCusLTD(this,"限时促销",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_allEv){
+            FrmSearchApr dlg = new FrmSearchApr(this,"已评价",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_writeEv){
+            System.out.println("7777");
+            FrmNotApr dlg = new FrmNotApr(this,"未评价",true);
             dlg.setVisible(true);
         }
     }

@@ -5,6 +5,7 @@ import java.util.zip.DataFormatException;
 
 public class BeanAppraise {
     private int fre_id;
+    private String fre_name;
     private int cus_id;
     private String apr_text;
     private Date apr_time;
@@ -14,6 +15,14 @@ public class BeanAppraise {
 
     public int getCus_id() {
         return cus_id;
+    }
+
+    public void setFre_name(String fre_name) {
+        this.fre_name = fre_name;
+    }
+
+    public String getFre_name() {
+        return fre_name;
     }
 
     public void setCus_id(int cus_id) {

@@ -46,6 +46,108 @@ public class LTDiscountManager {
         }
         return re;
     }
+    public List<BeanLTDiscount> loadUnCp(int id)throws BaseException {
+        Connection conn = null;
+        List<BeanLTDiscount> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from limitedtimediscount where lmd_start_time<now() and lmd_end_time>now() and fre_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanLTDiscount b = new BeanLTDiscount();
+                b.setLmd_id(rs.getInt(1));
+                b.setFre_id(rs.getInt(2));
+                b.setLmd_price(rs.getDouble(3));
+                b.setLmd_count(rs.getInt(4));
+                b.setLmd_start_time(rs.getTimestamp(5));
+                b.setLmd_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
+    public List<BeanLTDiscount> loadCp(int id)throws BaseException {
+        Connection conn = null;
+        List<BeanLTDiscount> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from limitedtimediscount where lmd_end_time<now() and fre_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanLTDiscount b = new BeanLTDiscount();
+                b.setLmd_id(rs.getInt(1));
+                b.setFre_id(rs.getInt(2));
+                b.setLmd_price(rs.getDouble(3));
+                b.setLmd_count(rs.getInt(4));
+                b.setLmd_start_time(rs.getTimestamp(5));
+                b.setLmd_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
+    public List<BeanLTDiscount> loadNotSt(int id)throws BaseException {
+        Connection conn = null;
+        List<BeanLTDiscount> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from limitedtimediscount where lmd_start_time>now()  and fre_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanLTDiscount b = new BeanLTDiscount();
+                b.setLmd_id(rs.getInt(1));
+                b.setFre_id(rs.getInt(2));
+                b.setLmd_price(rs.getDouble(3));
+                b.setLmd_count(rs.getInt(4));
+                b.setLmd_start_time(rs.getTimestamp(5));
+                b.setLmd_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
     public void addLmd(int id, int count, double price, String start,String end)throws BaseException{
         Connection conn = null;
         if(start==null) throw new BusinessException("开始时间不能为空");
