@@ -131,7 +131,9 @@ public class FrmMain extends JFrame implements ActionListener {
             menuItem_seeCou.addActionListener(this);
             menu_ch.add(menuItem_seeDis);
             menuItem_seeDis.addActionListener(this);
-
+            menu_ch.add(menuItem_seeLt);
+            menuItem_seeLt.addActionListener(this);
+            menubar.add(menu_ch);
         }
         this.setJMenuBar(menubar);
         statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -188,6 +190,26 @@ public class FrmMain extends JFrame implements ActionListener {
         }
         else if(e.getSource() == this.menuItem_lt){
             FrmLTD dlg = new FrmLTD(this,"限时促销管理",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_menuRec){
+            FrmMenu dlg = new FrmMenu(this,"增加菜谱",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_seeMenu){
+            FrmSearchMenu dlg = new FrmSearchMenu(this,"查询菜谱",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_seeCou){
+            FrmCusCou dlg = new FrmCusCou(this,"优惠券",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_seeDis){
+            FrmCusCou dlg = new FrmCusCou(this,"满减",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_seeLt){
+            FrmCusCou dlg = new FrmCusCou(this,"限时促销",true);
             dlg.setVisible(true);
         }
     }

@@ -46,6 +46,108 @@ public class CouponManager {
         }
         return re;
     }
+    public List<BeanCoupon> loadCp(String key)throws BaseException{
+        Connection conn = null;
+        List<BeanCoupon> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from Coupon where cp_end_time>now() and cp_rexr like ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+key+"%");
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanCoupon b = new BeanCoupon();
+                b.setCu_id(rs.getInt(1));
+                b.setCu_text(rs.getString(2));
+                b.setCp_need_price(rs.getDouble(3));
+                b.setCp_discount(rs.getDouble(4));
+                b.setCp_start_time(rs.getTimestamp(5));
+                b.setCp_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
+    public List<BeanCoupon> loadUncp(String key)throws BaseException{
+        Connection conn = null;
+        List<BeanCoupon> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from Coupon where cp_start_time>now() and cp_end_time<now() and cp_text like?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+key+"%");
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanCoupon b = new BeanCoupon();
+                b.setCu_id(rs.getInt(1));
+                b.setCu_text(rs.getString(2));
+                b.setCp_need_price(rs.getDouble(3));
+                b.setCp_discount(rs.getDouble(4));
+                b.setCp_start_time(rs.getTimestamp(5));
+                b.setCp_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
+    public List<BeanCoupon> loadNotSt(String key)throws BaseException{
+        Connection conn = null;
+        List<BeanCoupon> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from Coupon where cp_start_time<now() and cp_text like ?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+key+"%");
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanCoupon b = new BeanCoupon();
+                b.setCu_id(rs.getInt(1));
+                b.setCu_text(rs.getString(2));
+                b.setCp_need_price(rs.getDouble(3));
+                b.setCp_discount(rs.getDouble(4));
+                b.setCp_start_time(rs.getTimestamp(5));
+                b.setCp_end_time(rs.getTimestamp(6));
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
     public void addCou(String text, double price, double dis, String start,String end)throws BaseException{
         Connection conn = null;
         if("".equals(text)||text==null) throw new BusinessException("内容不能为空");

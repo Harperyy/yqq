@@ -13,13 +13,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuManager {
-    public List<BeanMenu> loadAll()throws BaseException{
+    public List<BeanMenu> loadAll(String key)throws BaseException{
         Connection conn = null;
         List<BeanMenu> re = new ArrayList<>();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from menu";
+            String sql = "select * from menu where Menu_name like  ? or Menu_material like ? or Menu_step like ? ";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+key+"%");
+            pst.setString(2,"%"+key+"%");
+            pst.setString(3,"%"+key+"%");
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                BeanMenu b = new BeanMenu();
+                b.setMenu_id(rs.getInt(1));
+                b.setMenu_name(rs.getString(2));
+                b.setMenu_material(rs.getString(3));
+                b.setMenu_pt(rs.getString(5));
+                b.setMenu_step(rs.getString(4));
+                re.add(b);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
+    public List<BeanMenu> search(String key1,String key2,String key3)throws BaseException{
+        Connection conn = null;
+        List<BeanMenu> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from menu where Menu_name like  ? or Menu_material like ? or Menu_step like ? ";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1,"%"+key1+"%");
+            pst.setString(2,"%"+key2+"%");
+            pst.setString(3,"%"+key3+"%");
             java.sql.ResultSet rs = pst.executeQuery();
             while(rs.next()){
                 BeanMenu b = new BeanMenu();
