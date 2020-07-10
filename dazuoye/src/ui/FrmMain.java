@@ -30,10 +30,12 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_writeEv=new JMenuItem("未评价");
 
     private JMenuItem  menuItem_allOd = new JMenuItem("所有订单");
-    private JMenuItem  menuItem_notPay=new JMenuItem("代付款");
-    private JMenuItem  menuItem_notTran=new JMenuItem("代发货");
+    private JMenuItem  menuItem_notTran=new JMenuItem("待发货");
     private JMenuItem  menuItem_notCp=new JMenuItem("待收货");
-    private JMenuItem  menuItem_notEv=new JMenuItem("待评价");
+    private JMenuItem  menuItem_t=new JMenuItem("正在退货");
+    private JMenuItem  menuItem_cp=new JMenuItem("交易结束");
+
+
 
     private JMenuItem  menuItem_menuRec=new JMenuItem("增加菜谱");
     private JMenuItem  menuItem_seeMenu=new JMenuItem("查询菜谱");
@@ -114,14 +116,16 @@ public class FrmMain extends JFrame implements ActionListener {
             menubar.add(menu_e);
             menu_od.add(menuItem_allOd);
             menuItem_allOd.addActionListener(this);
-            menu_od.add(menuItem_notPay);
-            menuItem_notPay.addActionListener(this);
+
             menu_od.add(menuItem_notTran);
             menuItem_notTran.addActionListener(this);
             menu_od.add(menuItem_notCp);
             menuItem_notCp.addActionListener(this);
-            menu_od.add(menuItem_notEv);
-            menuItem_notEv.addActionListener(this);
+            menu_od.add(menuItem_t);
+            menuItem_t.addActionListener(this);
+            menu_od.add(menuItem_cp);
+            menuItem_cp.addActionListener(this);
+
             menubar.add(menu_od);
             menu_me.add(menuItem_menuRec);
             menuItem_menuRec.addActionListener(this);
@@ -220,6 +224,31 @@ public class FrmMain extends JFrame implements ActionListener {
         else if(e.getSource() == this.menuItem_writeEv){
             System.out.println("7777");
             FrmNotApr dlg = new FrmNotApr(this,"未评价",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_allOd){
+
+            FrmOrdAll dlg = new FrmOrdAll(this,"所有订单",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_notTran){
+
+            FrmOrdX dlg = new FrmOrdX(this,"待发货",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_notCp){
+
+            FrmOrdS dlg = new FrmOrdS(this,"待收货",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_t){
+
+            FrmOrdT dlg = new FrmOrdT(this,"正在退货",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_cp){
+
+            FrmOrdC dlg = new FrmOrdC(this,"交易结束",true);
             dlg.setVisible(true);
         }
     }

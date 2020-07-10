@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FreshManager {
-    public static BeanFresh currentFre = null;
+        public static BeanFresh currentFre = null;
      public List<BeanFresh> loadAll()throws BaseException {
 
         Connection conn = null;

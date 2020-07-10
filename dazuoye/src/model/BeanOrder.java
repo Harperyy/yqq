@@ -11,6 +11,15 @@ public class BeanOrder {
     private Date ord_time;
     private int add_id;
     private String ord_state;
+    private String fre_name;
+
+    public void setFre_name(String fre_name) {
+        this.fre_name = fre_name;
+    }
+
+    public String getFre_name() {
+        return fre_name;
+    }
 
     public void setCus_id(int cus_id) {
         this.cus_id = cus_id;
