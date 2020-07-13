@@ -24,7 +24,7 @@ public class FrmSearchApr extends JDialog implements ActionListener {
     private JButton btnResetPwd = new JButton("查找");
     private JButton btnDelete = new JButton("删除");
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","商品编号","商品名称","评价内容","评价时间","等级","图片"};
+    private Object tblTitle[]={"编号","商品编号","商品名称","评价内容","评价时间","等级"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
@@ -33,7 +33,7 @@ public class FrmSearchApr extends JDialog implements ActionListener {
         try {
             String key = edt2.getText();
             List<BeanAppraise> users=(new AppraiseManager()).loadAll(key);
-            tblData =new Object[users.size()][7];
+            tblData =new Object[users.size()][6];
             for(int i=0;i<users.size();i++){
                 tblData[i][0]=users.get(i).getApr_id();
                 tblData[i][1]=users.get(i).getFre_id();
@@ -41,7 +41,7 @@ public class FrmSearchApr extends JDialog implements ActionListener {
                 tblData[i][3]=users.get(i).getApr_text();
                 tblData[i][4]=users.get(i).getApr_time();
                 tblData[i][5]=users.get(i).getGrade();
-                tblData[i][6]=users.get(i).getApr_pt();
+                //tblData[i][6]=users.get(i).getApr_pt();
 
 
             }
@@ -71,7 +71,7 @@ public class FrmSearchApr extends JDialog implements ActionListener {
             toolBar.add(edt2);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
-            this.reloadUserTable();
+            //this.reloadUserTable();
             this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
         }
 

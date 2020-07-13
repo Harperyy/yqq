@@ -1,6 +1,7 @@
 package model;
 
 public class BeanFreshType {
+
     private int FP_id;
     private String FP_name;
     private String FP_remark;

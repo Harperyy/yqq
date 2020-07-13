@@ -51,7 +51,7 @@ public class CouponManager {
         List<BeanCoupon> re = new ArrayList<>();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from Coupon where cp_end_time>now() and cp_rexr like ?";
+            String sql = "select * from Coupon where cp_end_time<now() and cp_rexr like ?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1,"%"+key+"%");
             java.sql.ResultSet rs = pst.executeQuery();
@@ -85,7 +85,7 @@ public class CouponManager {
         List<BeanCoupon> re = new ArrayList<>();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from Coupon where cp_start_time>now() and cp_end_time<now() and cp_text like?";
+            String sql = "select * from Coupon where cp_start_time<now() and cp_end_time>now() and cp_text like?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1,"%"+key+"%");
             java.sql.ResultSet rs = pst.executeQuery();
@@ -114,12 +114,13 @@ public class CouponManager {
         }
         return re;
     }
+
     public List<BeanCoupon> loadNotSt(String key)throws BaseException{
         Connection conn = null;
         List<BeanCoupon> re = new ArrayList<>();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from Coupon where cp_start_time<now() and cp_text like ?";
+            String sql = "select * from Coupon where cp_start_time>now() and cp_text like ?";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             pst.setString(1,"%"+key+"%");
             java.sql.ResultSet rs = pst.executeQuery();

@@ -22,21 +22,22 @@ public class FrmLTD extends JDialog implements ActionListener {
     //private JButton btnResetPwd = new JButton("修改商品信息");
     private JButton btnDelete = new JButton("删除促销项目");
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","商品编号","促销价格","促销数量","开始时间","结束时间"};
+    private Object tblTitle[]={"编号","商品编号","商品名称","促销价格","促销数量","开始时间","结束时间"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
     private void reloadUserTable(){
         try {
             List<BeanLTDiscount> users=(new LTDiscountManager()).loadAll();
-            tblData =new Object[users.size()][6];
+            tblData =new Object[users.size()][7];
             for(int i=0;i<users.size();i++){
                 tblData[i][0]=users.get(i).getLmd_id();
                 tblData[i][1]=users.get(i).getFre_id();
-                tblData[i][2]=users.get(i).getLmd_price();
-                tblData[i][3]=users.get(i).getLmt_count();
-                tblData[i][4]=users.get(i).getLmd_start_time();
-                tblData[i][5]=users.get(i).getLmd_end_time();
+                tblData[i][2]=users.get(i).getFre_name();
+                tblData[i][3]=users.get(i).getLmd_price();
+                tblData[i][4]=users.get(i).getLmt_count();
+                tblData[i][5]=users.get(i).getLmd_start_time();
+                tblData[i][6]=users.get(i).getLmd_end_time();
 
 
             }

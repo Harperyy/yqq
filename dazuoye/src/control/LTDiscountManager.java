@@ -18,7 +18,7 @@ public class LTDiscountManager {
         List<BeanLTDiscount> re = new ArrayList<>();
         try{
             conn = DBUtil.getConnection();
-            String sql = "select * from limitedtimediscount";
+            String sql = "select * from limitedtimediscount l ,fresh f where l.fre_id=f.fre_id";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
             java.sql.ResultSet rs = pst.executeQuery();
             while(rs.next()){
@@ -29,6 +29,7 @@ public class LTDiscountManager {
                 b.setLmd_count(rs.getInt(4));
                 b.setLmd_start_time(rs.getTimestamp(5));
                 b.setLmd_end_time(rs.getTimestamp(6));
+                b.setFre_name(rs.getString(8));
                 re.add(b);
             }
         }catch (SQLException e) {
@@ -80,6 +81,7 @@ public class LTDiscountManager {
         }
         return re;
     }
+
     public List<BeanLTDiscount> loadCp(int id)throws BaseException {
         Connection conn = null;
         List<BeanLTDiscount> re = new ArrayList<>();
@@ -157,9 +159,15 @@ public class LTDiscountManager {
         if(price<=0) throw new BusinessException("价格不能小于等于0");
         try{
             conn = DBUtil.getConnection();
-            String sql = "insert into limitedtimediscount(fre_id,lmd_price,lmd_count,lmd_start_time,lmd_end_time) values (?,?,?,?,?)";
-
+            String sql;
+            sql = "select * from limitedtimediscount where fre_id=? and lmd_start_time<now() and lmd_end_time>now()";
             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs= pst.executeQuery();
+            if(rs.next()) throw  new BusinessException("该商品已经参加促销，无法添加");
+            rs.close();pst.close();
+            sql = "insert into limitedtimediscount(fre_id,lmd_price,lmd_count,lmd_start_time,lmd_end_time) values (?,?,?,?,?)";
+            pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             pst.setDouble(2,price);
             pst.setInt(3,count);

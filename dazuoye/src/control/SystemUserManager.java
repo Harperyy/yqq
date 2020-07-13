@@ -11,7 +11,12 @@ import util.DbException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class SystemUserManager {
@@ -379,16 +384,30 @@ public class SystemUserManager {
         Connection conn = null;
         try{
             conn = DBUtil.getConnection();
-            String sql = "update Customer set cus_vip='是',cus_vip_end_time=? where cus_id=?";
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
-            long time = System.currentTimeMillis();
-            long t1 = 30*24*60*60*1000;
-            long t2 = t1*3;
-            long t3 = t1*12;
-            if(type==0) pst.setTimestamp(1, new java.sql.Timestamp(time+t1));
-            else if(type==1) pst.setTimestamp(1,new java.sql.Timestamp(time+t2));
-            else pst.setTimestamp(1,new java.sql.Timestamp(time+t3));
-            pst.setInt(2,SystemUserManager.currentUser.getId());
+            String sql ;
+            sql = "select cus_vip_end_time from customer where cus_id=?";
+            java.sql.PreparedStatement pst ;
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,SystemUserManager.currentUser.getId());
+            java.sql.ResultSet rs= pst.executeQuery();
+            java.sql.Timestamp time;
+            int f=0;
+            if(rs.next()){
+                f=1;time = rs.getTimestamp(1);
+            }
+            rs.close();pst.close();
+
+
+               if(type==0)sql = "update Customer set cus_vip='是',cus_vip_end_time=DATE_SUB(NOW(),INTERVAL -30 day)  where cus_id=?";
+               if(type==1)sql = "update Customer set cus_vip='是',cus_vip_end_time=DATE_SUB(NOW(),INTERVAL -90 day)  where cus_id=?";
+               if(type==2)sql = "update Customer set cus_vip='是',cus_vip_end_time=DATE_SUB(NOW(),INTERVAL -360 day)  where cus_id=?";
+
+
+
+            pst= conn.prepareStatement(sql);
+
+
+            pst.setInt(1,SystemUserManager.currentUser.getId());
             pst.execute();
         }catch (SQLException e) {
             e.printStackTrace();
@@ -404,4 +423,25 @@ public class SystemUserManager {
                 }
         }
     }
+    public static String addMonth(String date,String dateType,int month){
+        String nowDate = null;
+        SimpleDateFormat format = new SimpleDateFormat(dateType);
+        try {
+            Date parse = format.parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(parse);
+            calendar.add(Calendar.MONTH, month);
+            nowDate = format.format(calendar.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return nowDate;
+    }
+    public static Date stepMonth(Date sourceDate, int month) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(sourceDate);
+        c.add(Calendar.MONTH, month);
+        return c.getTime();
+    }
+
 }

@@ -3,7 +3,6 @@ package ui;
 import control.AppraiseManager;
 import control.SystemUserManager;
 import model.BeanAppraise;
-import model.BeanNotApr;
 import util.BaseException;
 
 import javax.swing.*;
@@ -15,27 +14,25 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class FrmNotApr extends JDialog implements ActionListener {
+public class FrmAprRec extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
-    private JButton btnAdd = new JButton("评论");
-   // private JButton btnResetPwd = new JButton("查找");
-    //private JButton btnDelete = new JButton("删除");
+    private  int id;
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"商品编号","商品名称"};
+    private Object tblTitle[]={"评价编号","用户编号","评价内容","评价等级","评价时间"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
-    //private JTextField edt2 = new JTextField(20);
     private void reloadUserTable(){
         try {
-            //String key = edt2.getText();
-            List<BeanNotApr> users=(new AppraiseManager()).search();
-            tblData =new Object[users.size()][2];
+            List<BeanAppraise> users=(new AppraiseManager()).load(id);
+            tblData =new Object[users.size()][5];
             for(int i=0;i<users.size();i++){
-
-                tblData[i][0]=users.get(i).getFre_id();
-                tblData[i][1]=users.get(i).getFre_name();
-
+                tblData[i][0]=users.get(i).getApr_id();
+                tblData[i][1]=users.get(i).getCus_id();
+                tblData[i][2]=users.get(i).getApr_text();
+                tblData[i][3]=users.get(i).getGrade();
+                //tblData[i][4]=users.get(i).getApr_pt();
+                tblData[i][4]=users.get(i).getApr_time();
 
 
             }
@@ -48,20 +45,13 @@ public class FrmNotApr extends JDialog implements ActionListener {
         }
     }
 
-    public FrmNotApr(Frame f, String s, boolean b) {
+    public FrmAprRec(Dialog f, String s, boolean b, int id) {
         super(f, s, b);
-
+        this.id = id;
         if(SystemUserManager.currentUser==null) {
             this.add(lab3);
         }
         else{
-            //this.setLayout(new GridLayout(2,1));
-            System.out.println("666");
-            toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-            toolBar.add(btnAdd);
-
-
-            this.getContentPane().add(toolBar, BorderLayout.NORTH);
 
             //提取现有数据
             this.reloadUserTable();
@@ -78,8 +68,6 @@ public class FrmNotApr extends JDialog implements ActionListener {
 
         this.validate();
 
-        this.btnAdd.addActionListener(this);
-
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -92,18 +80,6 @@ public class FrmNotApr extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
 
-        if(e.getSource()==this.btnAdd){
-            int i=this.userTable.getSelectedRow();
-            if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int userid= (int) this.tblData[i][0];
-            FrmAddApr dlg=new FrmAddApr(this,"评论",true,userid);
-            dlg.setVisible(true);
-            reloadUserTable();
-
-        }
     }
 }
 

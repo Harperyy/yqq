@@ -1,6 +1,5 @@
 package ui;
 
-import control.DiscountManager;
 import control.MenuManager;
 import model.BeanFreshType;
 import util.BaseException;
@@ -10,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FrmAddMenu extends JDialog implements ActionListener {
+public class FrmUpMenu extends JDialog implements ActionListener {
     private BeanFreshType user=null;
     private JPanel toolBar = new JPanel();
     private JPanel workPane = new JPanel();
@@ -34,10 +33,12 @@ public class FrmAddMenu extends JDialog implements ActionListener {
     private JTextField edt3 = new JTextField(20);
     private JTextField edt4 = new JTextField(20);
     private JTextField edt5 = new JTextField(20);
+    private int id;
 
     //private JComboBox cmbUsertype= new JComboBox(new String[] { "管理员", "借阅员"});
-    public FrmAddMenu(JDialog f, String s, boolean b) {
+    public FrmUpMenu(JDialog f, String s, boolean b,int id) {
         super(f, s, b);
+        this.id = id;
         this.setLayout(new GridLayout(4,1));
         this.add(workPane);
         this.add(workPane2);
@@ -87,7 +88,7 @@ public class FrmAddMenu extends JDialog implements ActionListener {
 
 
             try {
-                (new MenuManager()).add(edt1.getText(),edt2.getText(),edt3.getText(),edt4.getText());
+                (new MenuManager()).Up(id,edt1.getText(),edt2.getText(),edt3.getText(),edt4.getText());
                 System.out.println("11111");
                 this.setVisible(false);
             } catch (BaseException e1) {

@@ -9,6 +9,15 @@ public class BeanFresh {
     private double Fre_size;
     private String Fre_remark;
     private int fp_id;
+    private String fp_name;
+
+    public String getFp_name() {
+        return fp_name;
+    }
+
+    public void setFp_name(String fp_name) {
+        this.fp_name = fp_name;
+    }
 
     public int getFp_id() {
         return fp_id;

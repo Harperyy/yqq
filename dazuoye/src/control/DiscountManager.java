@@ -161,9 +161,10 @@ public class DiscountManager {
         if(dis<=0) throw new BusinessException("折扣不能小于等于0");
         try{
             conn = DBUtil.getConnection();
-            String sql = "insert into discount(disc_text,disc_count,disc_discount,disc_start_time,disc_end_time) values (?,?,?,?,?)";
-
-            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            String sql;
+            java.sql.PreparedStatement pst;
+            sql = "insert into discount(disc_text,disc_count,disc_discount,disc_start_time,disc_end_time) values (?,?,?,?,?)";
+            pst = conn.prepareStatement(sql);
             pst.setString(1,text);
             pst.setInt(2,count);
             pst.setDouble(3,dis);
@@ -261,5 +262,70 @@ public class DiscountManager {
                 }
         }
 
+    }
+    public void addGoods(int disc_id,int fre_id) throws BaseException {
+        Connection conn = null;
+        try{
+            conn = DBUtil.getConnection();
+            String sql;
+            sql = "select * from discount d1,discount_fresh d2 where d1.disc_id=d2.disc_id and d2.fre_id=? and d1.disc_start_time<now() and d1.disc_end_time>now()";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,fre_id);
+            java.sql.ResultSet rs=pst.executeQuery();
+            if(rs.next()) throw new BusinessException("该商品已有满折项目，无法添加");
+            rs.close();pst.close();
+            sql = "insert into discount_fresh(fre_id,disc_id) values(?,?)";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(2,fre_id);
+            pst.setInt(1,disc_id);
+            pst.execute();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+    }
+    public BeanDiscount loadUnCp(int id)throws BaseException {
+        Connection conn = null;
+        BeanDiscount b = new BeanDiscount();
+        try{
+            conn = DBUtil.getConnection();
+            String sql = "select * from Discount d1,discount_fresh d2 where d1.disc_end_time >now() and d1.disc_start_time<now() and " +
+                    "d1.disc_id=d2.disc_id and d2.fre_id=?";
+            java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+
+                b.setDisc_id(rs.getInt(1));
+                b.setDisc_text(rs.getString(2));
+                b.setCount(rs.getInt(3));
+                b.setDisc_discount(rs.getDouble(4));
+                b.setDisc_start_time(rs.getTimestamp(5));
+                b.setDisc_end_time(rs.getTimestamp(6));
+
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return b;
     }
 }

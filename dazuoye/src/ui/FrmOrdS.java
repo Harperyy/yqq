@@ -75,7 +75,7 @@ public class FrmOrdS extends JDialog implements ActionListener {
             toolBar.add(this.btn);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
-            //this.reloadUserTable();
+            this.reloadUserTable();
             this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
         }
 
@@ -146,7 +146,7 @@ public class FrmOrdS extends JDialog implements ActionListener {
                 return;
             }
             int userid= (int) this.tblData[i][0];
-            FrmOrdDetail dlg = new FrmOrdDetail(this,"订单详情",true,userid);
+            FrmVerifyDD dlg = new FrmVerifyDD(this,"订单详情",true,userid);
             dlg.setVisible(true);
         }
     }

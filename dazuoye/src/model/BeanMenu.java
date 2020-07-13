@@ -6,6 +6,15 @@ public class BeanMenu {
     private String Menu_material;
     private String Menu_step;
     private String Menu_pt;
+    private String menu_text;
+
+    public String getMenu_text() {
+        return menu_text;
+    }
+
+    public void setMenu_text(String menu_text) {
+        this.menu_text = menu_text;
+    }
 
     public int getMenu_id() {
         return Menu_id;

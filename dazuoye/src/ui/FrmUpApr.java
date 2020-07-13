@@ -37,7 +37,7 @@ public class FrmUpApr extends JDialog implements ActionListener {
 
 
         // 屏幕居中显示
-        this.setSize(1000, 600);
+        this.setSize(400, 300);
         double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.setLocation((int) (width - this.getWidth()) / 2,
@@ -64,6 +64,8 @@ public class FrmUpApr extends JDialog implements ActionListener {
         else if(e.getSource()==j1){
             try {
                 (new AppraiseManager()).UpApr(id,edt1.getText());
+                this.setVisible(false);
+
             } catch (BaseException e1) {
                 JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
 

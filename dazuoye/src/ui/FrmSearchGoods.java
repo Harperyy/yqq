@@ -1,10 +1,10 @@
 package ui;
 
-import control.CouponManager;
-import control.MenuManager;
+import control.AppraiseManager;
+import control.FreshManager;
 import control.SystemUserManager;
-import model.BeanMenu;
-import ui.FrmAddCou;
+import model.BeanAppraise;
+import model.BeanFresh;
 import util.BaseException;
 
 import javax.swing.*;
@@ -16,15 +16,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class FrmMenu extends JDialog implements ActionListener {
+public class FrmSearchGoods extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
-    private JButton btnAdd = new JButton("添加菜谱");
     private JButton btnResetPwd = new JButton("查找");
-    private JButton btnDelete = new JButton("删除菜谱");
-    private JButton btn = new JButton("修改菜谱");
+    private JButton btnAdd = new JButton("详情");
+    private JButton btn = new JButton("推荐菜单");
+    private JButton btn1 = new JButton("用户评价");
 
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","名称","材料","步骤"};
+    private Object tblTitle[]={"商品编号","商品名称","原价","会员价"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
@@ -32,14 +32,18 @@ public class FrmMenu extends JDialog implements ActionListener {
     private void reloadUserTable(){
         try {
             String key = edt2.getText();
-            List<BeanMenu> users=(new MenuManager()).loadAll(key);
+
+            List<BeanFresh> users;
+            if(key==null||"".equals(key)) users=(new FreshManager()).recommend();
+            else users=(new FreshManager()).load(key);
             tblData =new Object[users.size()][4];
             for(int i=0;i<users.size();i++){
-                tblData[i][0]=users.get(i).getMenu_id();
-                tblData[i][1]=users.get(i).getMenu_name();
-                tblData[i][2]=users.get(i).getMenu_material();
-                tblData[i][3]=users.get(i).getMenu_step();
-                //tblData[i][4]=users.get(i).getMenu_pt();
+
+                tblData[i][0]=users.get(i).getFre_id();
+                tblData[i][1]=users.get(i).getFre_name();
+                tblData[i][2]=users.get(i).getFre_price();
+                tblData[i][3]=users.get(i).getFre_vip_price();
+
 
 
             }
@@ -52,17 +56,19 @@ public class FrmMenu extends JDialog implements ActionListener {
         }
     }
 
-    public FrmMenu(Frame f, String s, boolean b) {
+    public FrmSearchGoods(Frame f, String s, boolean b) {
         super(f, s, b);
 
         if(SystemUserManager.currentUser==null) {
             this.add(lab3);
         }
         else{
+
+
             toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-            toolBar.add(btnAdd);
-            toolBar.add(btn);
-            toolBar.add(this.btnDelete);
+            toolBar.add(btnAdd);toolBar.add(btn);toolBar.add(btn1);
+
+            //toolBar.add(this.btnDelete);
             toolBar.add(btnResetPwd);
             toolBar.add(edt2);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
@@ -82,8 +88,8 @@ public class FrmMenu extends JDialog implements ActionListener {
         this.validate();
 
         this.btnAdd.addActionListener(this);
+        this.btn1.addActionListener(this);
         this.btn.addActionListener(this);
-        this.btnDelete.addActionListener(this);
         this.btnResetPwd.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -95,44 +101,45 @@ public class FrmMenu extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
-        if(e.getSource()==this.btnAdd){
-            FrmAddMenu dlg=new FrmAddMenu(this,"添加菜谱",true);
-            dlg.setVisible(true);
+        if(e.getSource()==this.btnResetPwd){
+
             //刷新表格
             this.reloadUserTable();
 
         }
-        else if(e.getSource()==this.btnDelete){
+
+
+        else if(e.getSource()==this.btnAdd){
             int i=this.userTable.getSelectedRow();
             if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择菜谱","提示",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if(JOptionPane.showConfirmDialog(this,"确定删除吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-                int userid= (int) this.tblData[i][0];
-                try {
-                    (new MenuManager()).Delete(userid);
-                    this.reloadUserTable();
-                } catch (BaseException e1) {
-                    JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
-                }
+            int userid= (int) this.tblData[i][0];
+            FrmGoodsDetail dlg=new FrmGoodsDetail(this,"商品详情",true,userid);
+            dlg.setVisible(true);
 
-            }
+
         }
         else if(e.getSource()==this.btn){
             int i=this.userTable.getSelectedRow();
             if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择菜谱","提示",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int userid= (int) this.tblData[i][0];
-
-                FrmUpMenu dlg=new FrmUpMenu(this,"添加菜谱",true,userid);
-                dlg.setVisible(true);
-                this.reloadUserTable();
-
+            FrmMenuRec dlg = new FrmMenuRec(this,"推荐菜单",true,userid);
+            dlg.setVisible(true);
         }
-
+        else if(e.getSource()==this.btn1){
+            int i=this.userTable.getSelectedRow();
+            if(i<0) {
+                JOptionPane.showMessageDialog(null,  "请选择商品","提示",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int userid= (int) this.tblData[i][0];
+            FrmAprRec dlg = new FrmAprRec(this,"用户评价",true,userid);dlg.setVisible(true);
+        }
     }
 }
 

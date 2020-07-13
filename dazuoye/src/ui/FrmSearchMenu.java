@@ -19,7 +19,7 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
     private JPanel toolBar2 = new JPanel();
     private JPanel toolBar3= new JPanel();
 
-    //private JButton btnAdd = new JButton("添加菜谱");
+    private JButton btnAdd = new JButton("关联商品");
     private JButton btnResetPwd = new JButton("查找");
     //private JButton btnDelete = new JButton("删除菜谱");
     private JLabel lab1 = new JLabel("名称");
@@ -27,7 +27,7 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
     private JLabel lab4 = new JLabel("步骤");
 
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","名称","材料","步骤","图片"};
+    private Object tblTitle[]={"编号","名称","材料","步骤"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
@@ -42,13 +42,13 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
             String key3 = edt3.getText();
 
             List<BeanMenu> users=(new MenuManager()).search(key1,key2,key3);
-            tblData =new Object[users.size()][5];
+            tblData =new Object[users.size()][4];
             for(int i=0;i<users.size();i++){
                 tblData[i][0]=users.get(i).getMenu_id();
                 tblData[i][1]=users.get(i).getMenu_name();
                 tblData[i][2]=users.get(i).getMenu_material();
                 tblData[i][3]=users.get(i).getMenu_step();
-                tblData[i][4]=users.get(i).getMenu_pt();
+            //    tblData[i][4]=users.get(i).getMenu_pt();
 
 
             }
@@ -68,13 +68,10 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
             this.add(lab3);
         }
         else{
-            this.setLayout(new GridLayout(4,1));
-            this.add(toolBar);
-            this.add(toolBar2);
-            this.add(toolBar3);
-            this.add(btnResetPwd);
+            //this.setLayout(new GridLayout(4,1));
+
             toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-            //toolBar.add(btnAdd);
+            toolBar.add(btnAdd);
 
             //toolBar.add(this.btnDelete);
             toolBar.add(lab1);
@@ -83,9 +80,11 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
             toolBar.add(edt2);
             toolBar.add(lab4);
             toolBar.add(edt3);
+            toolBar.add(btnResetPwd);
+
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
-            this.reloadUserTable();
+
             this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
         }
 
@@ -99,6 +98,7 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
 
         this.validate();
 
+        this.btnAdd.addActionListener(this);
 
         this.btnResetPwd.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
@@ -115,6 +115,16 @@ public class FrmSearchMenu  extends JDialog implements ActionListener {
 
             this.reloadUserTable();
 
+        }
+        else if(e.getSource()==this.btnAdd){
+            int i=this.userTable.getSelectedRow();
+            if(i<0) {
+                JOptionPane.showMessageDialog(null,  "请选择菜单","提示",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int userid= (int) this.tblData[i][0];
+            FrmMenuGoods dlg = new FrmMenuGoods(this,"关联商品",true,userid);
+            dlg.setVisible(true);
         }
 
 

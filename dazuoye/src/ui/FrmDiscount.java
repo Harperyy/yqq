@@ -19,7 +19,7 @@ import java.util.List;
 public class FrmDiscount extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
     private JButton btnAdd = new JButton("添加满减项目");
-    //private JButton btnResetPwd = new JButton("修改商品信息");
+    private JButton btnResetPwd = new JButton("添加适用商品");
     private JButton btnDelete = new JButton("删除满减项目");
     private JLabel lab3 = new JLabel("请先登录");
     private Object tblTitle[]={"编号","内容","使用数量","折扣","开始时间","结束时间"};
@@ -60,6 +60,7 @@ public class FrmDiscount extends JDialog implements ActionListener {
             toolBar.add(btnAdd);
 
             toolBar.add(this.btnDelete);
+            toolBar.add(btnResetPwd);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
             this.reloadUserTable();
@@ -77,7 +78,7 @@ public class FrmDiscount extends JDialog implements ActionListener {
         this.validate();
 
         this.btnAdd.addActionListener(this);
-        //this.btnResetPwd.addActionListener(this);
+        this.btnResetPwd.addActionListener(this);
         this.btnDelete.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -112,6 +113,16 @@ public class FrmDiscount extends JDialog implements ActionListener {
                 }
 
             }
+        }
+        else if(e.getSource()==this.btnResetPwd){
+            int i=this.userTable.getSelectedRow();
+            if(i<0) {
+                JOptionPane.showMessageDialog(null,  "请选择满减项目","提示",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int userid= (int) this.tblData[i][0];
+            FrmDisGoods dlg = new FrmDisGoods(this,"添加使用商品",true,userid);
+            dlg.setVisible(true);
         }
 
     }

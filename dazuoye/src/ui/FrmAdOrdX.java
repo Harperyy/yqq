@@ -14,15 +14,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class FrmOrdP extends JDialog implements ActionListener {
+public class FrmAdOrdX extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
     private JPanel toolBar2 = new JPanel();
 
-    private JButton btnAdd = new JButton("查询");
-    private JButton key = new JButton("关键词");
+    private JButton btnAdd = new JButton("发货");
+    //private JButton key = new JButton("关键词");
 
-    private JTextField edtUserId = new JTextField(20);
-    private JButton btn = new JButton("订单详情");
+    //private JTextField edtUserId = new JTextField(20);
+    private JButton btn= new JButton("订单详情");
     //private JButton btnDelete = new JButton("删除优惠券");
     private JLabel lab3 = new JLabel("请先登录");
     private Object tblTitle[]={"编号","商品名称","原价","最后价格","下单时间","订单状态"};
@@ -32,12 +32,13 @@ public class FrmOrdP extends JDialog implements ActionListener {
     private void reloadUserTable(){
         try {
             List<BeanOrder> users = null;
-            String k = edtUserId.getText();
-            users = (new OrdersManager()).loadP(k);
+            String k = "";
+            users = (new OrdersManager()).loadX();
 
             tblData =new Object[users.size()][6];
             for(int i=0;i<users.size();i++){
                 tblData[i][0]=users.get(i).getOrd_id();
+                System.out.println(tblData[i][0]);
                 tblData[i][1]=users.get(i).getFre_name();
                 tblData[i][2]=users.get(i).getOrd_start_price();
                 tblData[i][3]=users.get(i).getOrd_final_price();
@@ -55,7 +56,7 @@ public class FrmOrdP extends JDialog implements ActionListener {
         }
     }
 
-    public FrmOrdP(Frame f, String s, boolean b) {
+    public FrmAdOrdX(Frame f, String s, boolean b) {
         super(f, s, b);
 
         if(SystemUserManager.currentUser==null) {
@@ -65,7 +66,7 @@ public class FrmOrdP extends JDialog implements ActionListener {
             //this.setLayout(new GridLayout(3,1));
 
 
-            toolBar.add(key);toolBar.add(edtUserId);
+           // toolBar.add(key);toolBar.add(edtUserId);
 
             toolBar.add(btnAdd);
 
@@ -100,11 +101,23 @@ public class FrmOrdP extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         if(e.getSource()==this.btnAdd){
-
+            int i=this.userTable.getSelectedRow();
+            if(i<0) {
+                JOptionPane.showMessageDialog(null,  "请选择订单","提示",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int userid= (int) this.tblData[i][0];
+            try {
+                (new OrdersManager()).UpX(userid);
+                this.reloadUserTable();
+            } catch (BaseException e1) {
+                JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
+            }
             //刷新表格
             this.reloadUserTable();
 
         }
+
         else if(e.getSource()==this.btn){
             int i=this.userTable.getSelectedRow();
             if(i<0) {
@@ -115,7 +128,6 @@ public class FrmOrdP extends JDialog implements ActionListener {
             FrmVerifyDD dlg = new FrmVerifyDD(this,"订单详情",true,userid);
             dlg.setVisible(true);
         }
-
     }
 }
 

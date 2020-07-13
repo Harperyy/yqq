@@ -9,6 +9,19 @@ public class BeanLTDiscount {
     private int lmd_count;
     private Date lmd_start_time;
     private  Date lmd_end_time;
+    private String fre_name;
+
+    public void setFre_name(String fre_name) {
+        this.fre_name = fre_name;
+    }
+
+    public String getFre_name() {
+        return fre_name;
+    }
+
+    public int getLmd_count() {
+        return lmd_count;
+    }
 
     public void setFre_id(int fre_id) {
         this.fre_id = fre_id;

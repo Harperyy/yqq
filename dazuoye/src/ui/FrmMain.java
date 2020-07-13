@@ -16,14 +16,19 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenu menu_Manager=new JMenu("个人中心");
     private JMenu menu_d=new JMenu("商品管理");
     private JMenu menu_fr=new JMenu("优惠管理");
+    private JMenu menu_dd=new JMenu("订单管理");
+
     private JMenu menu_e=new JMenu("我的评价");
     private JMenu menu_od=new JMenu("我的订单");
     private JMenu menu_me=new JMenu("菜谱中心");
     private JMenu menu_cu=new JMenu("消费中心");
     private JMenu menu_ch=new JMenu("优惠查询");
 
+    private JMenuItem  menuItem_fh=new JMenuItem("发货");
+    private JMenuItem  menuItem_sd=new JMenuItem("送达");
+    private JMenuItem  menuItem_th=new JMenuItem("退货成功");
 
-    private JMenuItem  menuItem_allGoods=new JMenuItem("所有商品");
+    private JMenuItem  menuItem_allGoods=new JMenuItem("查询商品");
     private JMenuItem  menuItem_clGoods=new JMenuItem("所有分类");
 
     private JMenuItem  menuItem_allEv=new JMenuItem("已评价");
@@ -41,13 +46,16 @@ public class FrmMain extends JFrame implements ActionListener {
     private JMenuItem  menuItem_seeMenu=new JMenuItem("查询菜谱");
 
     private JMenuItem  menuItem_seeCou=new JMenuItem("优惠券");
-    private JMenuItem  menuItem_seeDis=new JMenuItem("满减");
+    private JMenuItem  menuItem_seeDis=new JMenuItem("满折");
     private JMenuItem  menuItem_seeLt=new JMenuItem("限时促销");
 
     private JMenuItem  menuItem_changePw=new JMenuItem("修改密码");
     private JMenuItem  menuItem_cusDetail=new JMenuItem("个人资料");
     private JMenuItem  menuItem_adDetail=new JMenuItem("个人资料");
     private JMenuItem  menuItem_vip=new JMenuItem("vip会员");
+    private JMenuItem  menuItem_addr=new JMenuItem("我的地址");
+
+
 
     private JMenuItem  menuItem_goods=new JMenuItem("商品信息管理");
     private JMenuItem  menuItem_pc=new JMenuItem("商品采购管理");
@@ -55,7 +63,7 @@ public class FrmMain extends JFrame implements ActionListener {
 
 
     private JMenuItem  menuItem_lt=new JMenuItem("限时促销管理");
-    private JMenuItem  menuItem_d=new JMenuItem("满减管理");
+    private JMenuItem  menuItem_d=new JMenuItem("满折管理");
     private JMenuItem  menuItem_cou=new JMenuItem("优惠券管理");
 
 
@@ -91,6 +99,18 @@ public class FrmMain extends JFrame implements ActionListener {
             menu_fr.add(menuItem_cou);
             menuItem_cou.addActionListener(this);
             menubar.add(menu_fr);
+            menu_dd.add(menuItem_fh);
+            menuItem_fh.addActionListener(this);
+            menu_dd.add(menuItem_sd);
+            menuItem_sd.addActionListener(this);
+            menu_dd.add(menuItem_th);
+            menuItem_th.addActionListener(this);
+            menubar.add(menu_dd);
+            menu_me.add(menuItem_menuRec);
+            menuItem_menuRec.addActionListener(this);
+            menu_me.add(menuItem_seeMenu);
+            menuItem_seeMenu.addActionListener(this);
+            menubar.add(menu_me);
 
 
 
@@ -103,6 +123,8 @@ public class FrmMain extends JFrame implements ActionListener {
             menuItem_cusDetail.addActionListener(this);
             menu_Manager.add(menuItem_vip);
             menuItem_vip.addActionListener(this);
+            menu_Manager.add(menuItem_addr);
+            menuItem_addr.addActionListener(this);
             menubar.add(menu_Manager);
             menu_cu.add(menuItem_allGoods);
             menuItem_allGoods.addActionListener(this);
@@ -127,11 +149,7 @@ public class FrmMain extends JFrame implements ActionListener {
             menuItem_cp.addActionListener(this);
 
             menubar.add(menu_od);
-            menu_me.add(menuItem_menuRec);
-            menuItem_menuRec.addActionListener(this);
-            menu_me.add(menuItem_seeMenu);
-            menuItem_seeMenu.addActionListener(this);
-            menubar.add(menu_me);
+
             menu_ch.add(menuItem_seeCou);
             menuItem_seeCou.addActionListener(this);
             menu_ch.add(menuItem_seeDis);
@@ -190,7 +208,7 @@ public class FrmMain extends JFrame implements ActionListener {
             dlg.setVisible(true);
         }
         else if(e.getSource() == this.menuItem_d){
-            FrmDiscount dlg = new FrmDiscount(this,"满减管理",true);
+            FrmDiscount dlg = new FrmDiscount(this,"满折管理",true);
             dlg.setVisible(true);
         }
         else if(e.getSource() == this.menuItem_lt){
@@ -249,6 +267,36 @@ public class FrmMain extends JFrame implements ActionListener {
         else if(e.getSource() == this.menuItem_cp){
 
             FrmOrdC dlg = new FrmOrdC(this,"交易结束",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_addr){
+
+            FrmMyAddr dlg = new FrmMyAddr(this,"我的地址",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_fh){
+
+            FrmAdOrdX dlg = new FrmAdOrdX(this,"发货",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_sd){
+
+            FrmAdOrdP dlg = new FrmAdOrdP(this,"送达",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_th){
+
+            FrmAdOrdT dlg = new FrmAdOrdT(this,"退货成功",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_allGoods){
+
+            FrmSearchGoods dlg = new FrmSearchGoods(this,"查询商品",true);
+            dlg.setVisible(true);
+        }
+        else if(e.getSource() == this.menuItem_clGoods){
+
+            FrmClassGoods dlg = new FrmClassGoods(this,"所有分类",true);
             dlg.setVisible(true);
         }
     }

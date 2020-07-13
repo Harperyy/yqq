@@ -1,8 +1,12 @@
 package ui;
 
+import control.AddressManager;
+import control.DiscountManager;
 import control.OrdersManager;
 import control.SystemUserManager;
-import model.BeanOrder;
+import model.BeanAddress;
+import model.BeanDiscount;
+import model.BeanOrdDetail;
 import util.BaseException;
 
 import javax.swing.*;
@@ -14,35 +18,28 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class FrmOrdP extends JDialog implements ActionListener {
+public class FrmMyAddr extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
-    private JPanel toolBar2 = new JPanel();
-
-    private JButton btnAdd = new JButton("查询");
-    private JButton key = new JButton("关键词");
-
-    private JTextField edtUserId = new JTextField(20);
-    private JButton btn = new JButton("订单详情");
-    //private JButton btnDelete = new JButton("删除优惠券");
+    private JButton btnAdd = new JButton("添加地址");
+    //private JButton btnResetPwd = new JButton("修改商品信息");
+    private JButton btnDelete = new JButton("删除地址");
     private JLabel lab3 = new JLabel("请先登录");
-    private Object tblTitle[]={"编号","商品名称","原价","最后价格","下单时间","订单状态"};
+    private Object tblTitle[]={"编号","省","城市","街区","详细地址","电话","收货人"};
     private Object tblData[][];
     DefaultTableModel tablmod=new DefaultTableModel();
     private JTable userTable=new JTable(tablmod);
     private void reloadUserTable(){
         try {
-            List<BeanOrder> users = null;
-            String k = edtUserId.getText();
-            users = (new OrdersManager()).loadP(k);
-
-            tblData =new Object[users.size()][6];
+            List<BeanAddress> users=(new AddressManager()).load();
+            tblData =new Object[users.size()][7];
             for(int i=0;i<users.size();i++){
-                tblData[i][0]=users.get(i).getOrd_id();
-                tblData[i][1]=users.get(i).getFre_name();
-                tblData[i][2]=users.get(i).getOrd_start_price();
-                tblData[i][3]=users.get(i).getOrd_final_price();
-                tblData[i][4]=users.get(i).getOrd_time();
-                tblData[i][5]=users.get(i).getOrd_state();
+                tblData[i][0]=users.get(i).getAdd_id();
+                tblData[i][1]=users.get(i).getProvince();
+                tblData[i][2]=users.get(i).getCity();
+                tblData[i][3]=users.get(i).getBlock();
+                tblData[i][4]=users.get(i).getAdd_text();
+                tblData[i][5]=users.get(i).getAdd_phone();
+                tblData[i][6]=users.get(i).getAdd_peo_name();
 
 
             }
@@ -55,21 +52,17 @@ public class FrmOrdP extends JDialog implements ActionListener {
         }
     }
 
-    public FrmOrdP(Frame f, String s, boolean b) {
+    public FrmMyAddr(Frame f, String s, boolean b) {
         super(f, s, b);
 
         if(SystemUserManager.currentUser==null) {
             this.add(lab3);
         }
         else{
-            //this.setLayout(new GridLayout(3,1));
-
-
-            toolBar.add(key);toolBar.add(edtUserId);
-
+            toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar.add(btnAdd);
 
-            toolBar.add(this.btn);
+            toolBar.add(this.btnDelete);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
             this.reloadUserTable();
@@ -87,8 +80,8 @@ public class FrmOrdP extends JDialog implements ActionListener {
         this.validate();
 
         this.btnAdd.addActionListener(this);
-        this.btn.addActionListener(this);
-        //this.btnDelete.addActionListener(this);
+        //this.btnResetPwd.addActionListener(this);
+        this.btnDelete.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 //System.exit(0);
@@ -100,20 +93,28 @@ public class FrmOrdP extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // TODO Auto-generated method stub
         if(e.getSource()==this.btnAdd){
-
+            FrmAddAddr dlg=new FrmAddAddr(this,"添加地址",true);
+            dlg.setVisible(true);
             //刷新表格
             this.reloadUserTable();
 
         }
-        else if(e.getSource()==this.btn){
+        else if(e.getSource()==this.btnDelete){
             int i=this.userTable.getSelectedRow();
             if(i<0) {
-                JOptionPane.showMessageDialog(null,  "请选择订单","提示",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,  "请选择地址","提示",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int userid= (int) this.tblData[i][0];
-            FrmVerifyDD dlg = new FrmVerifyDD(this,"订单详情",true,userid);
-            dlg.setVisible(true);
+            if(JOptionPane.showConfirmDialog(this,"确定删除吗？","确认",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+                int userid= (int) this.tblData[i][0];
+                try {
+                    (new DiscountManager()).DeleteDisc(userid);
+                    this.reloadUserTable();
+                } catch (BaseException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(),"错误",JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
         }
 
     }

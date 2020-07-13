@@ -55,6 +55,48 @@ public class AppraiseManager {
         }
         return re;
     }
+    public List<BeanAppraise> load(int id) throws BaseException{
+        Connection conn = null;
+        List<BeanAppraise> re = new ArrayList<>();
+        try{
+            conn = DBUtil.getConnection();
+            String sql;
+            java.sql.PreparedStatement pst;
+            java.sql.ResultSet rs;
+            sql = "select * from appraise  where  fre_id= ? order by apr_time";
+            pst = conn.prepareStatement(sql);
+
+            pst.setInt(1,id);
+
+            rs = pst.executeQuery();
+            while(rs.next()){
+                BeanAppraise b = new BeanAppraise();
+
+
+                b.setCus_id(rs.getInt(2));
+                b.setApr_text(rs.getString(3));
+                b.setApr_time(rs.getTimestamp(4));
+                b.setGrade(rs.getString(5));
+                b.setApr_pt(rs.getString(6));
+                b.setApr_id(rs.getInt(7));
+
+                re.add(b);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }
+        finally{
+            if(conn!=null)
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+        }
+        return re;
+    }
     public List<BeanNotApr> search() throws BaseException{
         Connection conn = null;
         List<BeanNotApr> re = new ArrayList<>();
@@ -63,8 +105,12 @@ public class AppraiseManager {
             String sql;
             java.sql.PreparedStatement pst;
             java.sql.ResultSet rs;
-            sql = "select o1.fre_id  f.fre_name from orderdetail o1,orders o2 ,fresh f where  f.fre_id=o1.fre_id and o1.ord_id= o2.ord_id and o2.cus_id=? and o1.fre_id  not in(\n" +
-                    "select appraise.fre_id fre_id from appraise,fresh where appraise.fre_id=fresh.Fre_id and appraise.cus_id=?)";
+            sql = "select o1.fre_id , f.fre_name \n" +
+                    "from orderdetail o1,orders o2 ,fresh f \n" +
+                    "where  f.fre_id=o1.fre_id and o1.ord_id= o2.ord_id and o2.cus_id=? and o1.fre_id  not in( \n" +
+                    "\n" +
+                    "select appraise.fre_id fre_id \n" +
+                    "from appraise,fresh where appraise.fre_id=fresh.Fre_id and appraise.cus_id=?)";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,SystemUserManager.currentUser.getId());
             pst.setInt(2,SystemUserManager.currentUser.getId());
@@ -102,7 +148,7 @@ public class AppraiseManager {
             conn = DBUtil.getConnection();
             String sql;
             java.sql.PreparedStatement pst;
-            sql = "insert into appraise(fre_id,cos_id,apr_text,apr_time,apr_grade,apr_pt) values(?,?,?,new(),?,?) ";
+            sql = "insert into appraise(fre_id,cus_id,apr_text,apr_time,apr_grade,apr_pt) values(?,?,?,now(),?,?) ";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,fre_id);
             pst.setInt(2,SystemUserManager.currentUser.getId());
@@ -138,6 +184,7 @@ public class AppraiseManager {
             java.sql.ResultSet rs = pst.executeQuery();
             rs.next();
             String text =rs.getString(1);
+            rs.close();pst.close();
             sql = "update appraise set apr_text=?,apr_time=now() where apr_id=?";
             pst = conn.prepareStatement(sql);
             pst.setString(1,text+word);

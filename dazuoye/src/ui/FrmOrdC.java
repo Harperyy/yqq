@@ -72,7 +72,7 @@ public class FrmOrdC extends JDialog implements ActionListener {
             toolBar.add(this.btn);
             this.getContentPane().add(toolBar, BorderLayout.NORTH);
             //提取现有数据
-            //this.reloadUserTable();
+            this.reloadUserTable();
             this.getContentPane().add(new JScrollPane(this.userTable), BorderLayout.CENTER);
         }
 

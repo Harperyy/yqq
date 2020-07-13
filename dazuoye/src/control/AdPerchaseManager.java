@@ -83,11 +83,16 @@ public class AdPerchaseManager {
             conn = DBUtil.getConnection();
             String sql;
             java.sql.PreparedStatement pst;
-            sql = "select * from administraterperchase where sp_id =?";
+            sql = "select sp_state from administraterperchase where sp_id =?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
             java.sql.ResultSet rs = pst.executeQuery();
             if(!rs.next()) throw new BusinessException("没有该采购订单");
+            System.out.println(rs.getString(1));
+            if(!rs.getString(1).equals("已下单")) throw new BusinessException("该订单状态不能发货");
+
+            rs.close();pst.close();
+
             sql = "update administraterperchase set sp_state='已在途' where sp_id=?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);
@@ -113,11 +118,19 @@ public class AdPerchaseManager {
             conn = DBUtil.getConnection();
             String sql;
             java.sql.PreparedStatement pst;
+            sql = "select sp_state from administraterperchase where sp_id =?";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,id);
+            java.sql.ResultSet rs = pst.executeQuery();
+            if(!rs.next()) throw new BusinessException("没有该采购订单");
+            else if(!rs.getString(1).equals("已在途")) throw new BusinessException("该订单转态不能进行到库操作");
+            rs.close();pst.close();
             sql = "update fresh set fre_count = fre_count+? where fre_id =?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,cnt);
             pst.setInt(2,fre_id);
             pst.execute();
+            pst.close();
             sql = "update administraterperchase set sp_state='已在库' where sp_id=?";
             pst = conn.prepareStatement(sql);
             pst.setInt(1,id);

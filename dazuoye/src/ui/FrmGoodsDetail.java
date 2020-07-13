@@ -1,8 +1,9 @@
 package ui;
 
-import control.OrdersManager;
-import control.SystemUserManager;
-import model.BeanCustomer;
+import control.*;
+import model.BeanDiscount;
+import model.BeanFresh;
+import model.BeanLTDiscount;
 import model.BeanOrdDetail;
 import util.BaseException;
 
@@ -12,8 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FrmOrdDetail extends JDialog implements ActionListener {
+public class FrmGoodsDetail extends JDialog implements ActionListener {
     private JPanel toolBar = new JPanel();
     private JPanel toolBar1 = new JPanel();
     private JPanel toolBar2 = new JPanel();
@@ -28,17 +31,17 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
 
 
 
-    private JLabel lab1 = new JLabel("地址：");
-    private JLabel lab2 = new JLabel("商品名称：");
-    private JLabel lab3 = new JLabel("数量：");
+    private JLabel lab1 = new JLabel("商品名称：");
+    private JLabel lab2 = new JLabel("商品描述：");
+    private JLabel lab3 = new JLabel("库存：");
     private JLabel lab4 = new JLabel("原价：");
-    private JLabel lab5 = new JLabel("优惠券编号：");
-    private JLabel lab6 = new JLabel("优惠价格:");
-    private JLabel lab7 = new JLabel("满减编号");
-    private JLabel lab8 = new JLabel("满减价格：");
-    private JLabel lab10 = new JLabel("最终价格：");
-    private JLabel lab11 = new JLabel("订单时间：");
+    private JLabel lab5 = new JLabel("会员价：");
 
+    private JLabel lab8 = new JLabel("促销价：");
+    private JLabel lab10 = new JLabel("规格：");
+    private JLabel lab11 = new JLabel("类别：");
+   // private JLabel lab6 = new JLabel("优惠:");
+    private JLabel lab7 = new JLabel("满减: ");
 
     //private JLabel lab2 = new JLabel("�ˣ�");
     private JLabel lab9 = new JLabel("请先登录！！！");
@@ -51,24 +54,55 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
     private JLabel city = new JLabel();
     private JLabel time = new JLabel();
     private JLabel vip = new JLabel();
-    private JLabel vip1 = new JLabel();
+    //private JLabel vip1 = new JLabel();
     private JLabel vip2 = new JLabel();
+    private JButton buy = new JButton("立即购买");
     private int ord_id;
 
-    private void reloadUserTable(){
+    private void reload(){
         try {
-            BeanOrdDetail users=(new OrdersManager()).loadDetail(ord_id);
-            System.out.println(users);
-            id.setText(users.getAddress()+"");
-            name.setText(users.getFre_name());
-            sex.setText(users.getCount()+"");
-            phone.setText(users.getStart_price()+"");
-            email.setText(users.getCou_id()+"");
-            city.setText(users.getCou_dis()+"");
-            time.setText(users.getDisc_id()+"");
-            vip.setText(users.getDisc_dis()+"");
-            vip1.setText(users.getFinal_price()+"");
-            vip2.setText(users.getTime().toString());
+            BeanFresh users=(new FreshManager()).search(ord_id);
+            id.setText(users.getFre_name());
+            name.setText(users.getFre_remark());
+            sex.setText(users.getFre_count()+"");
+            phone.setText(users.getFre_price()+"");
+            email.setText(users.getFre_vip_price()+"");
+//            List<BeanLTDiscount> re = (new LTDiscountManager()).loadUnCp(ord_id);
+//            if(re.get(0).getLmd_start_time()!=null)
+//                city.setText(re.get(0).getLmd_count()+"");
+//            else city.setText("无");
+//            System.out.println(re.get(0).getLmd_start_time());
+            time.setText(users.getFre_size()+"");
+            vip.setText(users.getFp_name()+"");
+//            //vip1.setText(users.getFinal_price()+"");
+//            BeanDiscount d = (new DiscountManager()).loadUnCp(ord_id);
+//            if(d.getDisc_text()!=null) vip2.setText(d.getDisc_text());
+//            else vip2.setText("无");
+
+        } catch (BaseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+
+            List<BeanLTDiscount> re = (new LTDiscountManager()).loadUnCp(ord_id);
+            if(re.size()>0)
+                city.setText(re.get(0).getLmd_count()+"");
+            else city.setText("无");
+
+
+            //vip1.setText(users.getFinal_price()+"");
+
+
+        } catch (BaseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+
+            BeanDiscount d = (new DiscountManager()).loadUnCp(ord_id);
+            if(d.getDisc_text()!=null) vip2.setText(d.getDisc_text());
+            else vip2.setText("无");
 
         } catch (BaseException e) {
             // TODO Auto-generated catch block
@@ -76,32 +110,34 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
         }
     }
 
-    public FrmOrdDetail(Dialog f, String s, boolean b,int Id) {
+    public FrmGoodsDetail(Dialog f, String s, boolean b, int Id) {
         super(f, s, b);
         this.ord_id=Id;
+        reload();
         if(SystemUserManager.currentUser==null) {
             this.add(lab9);
         }
         else{
-            reloadUserTable();
-            this.setLayout(new GridLayout(11,1));
+
+            this.setLayout(new GridLayout(10,1));
             this.add(toolBar1);
             this.add(toolBar2);
             this.add(toolBar3);
             this.add(toolBar4);
             this.add(toolBar5);
-            this.add(toolBar6);
-            this.add(toolBar7);
+
             this.add(toolBar8);
             this.add(toolBar9);
             this.add(toolBar10);
+            //this.add(toolBar6);
+            this.add(toolBar7);
             this.add(toolBar);
             toolBar1.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar2.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar3.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar4.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar5.setLayout(new FlowLayout(FlowLayout.LEFT));
-            toolBar6.setLayout(new FlowLayout(FlowLayout.LEFT));
+            //toolBar6.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar7.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar8.setLayout(new FlowLayout(FlowLayout.LEFT));
             toolBar9.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -117,21 +153,23 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
             toolBar4.add(phone);
             toolBar5.add(lab5);
             toolBar5.add(email);
-            toolBar6.add(lab6);
-            toolBar6.add(city);
-            toolBar7.add(lab7);
-            toolBar7.add(time);
-            toolBar8.add(lab8);
-            toolBar8.add(vip);
-            toolBar9.add(vip1);
-            toolBar10.add(vip2);
 
+            toolBar8.add(lab8);
+            toolBar8.add(city);
+            toolBar9.add(lab10);
+            toolBar9.add(time);
+            toolBar10.add(lab11);
+            toolBar10.add(vip);
+            //toolBar9.add(vip1);
+            toolBar7.add(lab7);
+            toolBar7.add(vip2);
+            toolBar.add(buy);
 
         }
 
 
         // ��Ļ������ʾ
-        this.setSize(400, 400);
+        this.setSize(350, 400);
         double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.setLocation((int) (width - this.getWidth()) / 2,
@@ -139,7 +177,7 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
 
 
 
-
+        this.buy.addActionListener(this);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 //System.exit(0);
@@ -150,6 +188,10 @@ public class FrmOrdDetail extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==buy){
+            FrmBuy dlg = new FrmBuy(this,"选择数量和地址",true,ord_id);
+            dlg.setVisible(true);
 
+        }
     }
 }

@@ -34,7 +34,7 @@ public class FrmCusDetail extends JDialog implements ActionListener{
     private JLabel lab4 = new JLabel("电话：");
     private JLabel lab5 = new JLabel("邮箱：");
     private JLabel lab6 = new JLabel("城市:");
-    private JLabel lab7 = new JLabel("注册时间");
+    private JLabel lab7 = new JLabel("vip到期时间：");
     private JLabel lab8 = new JLabel("vip：");
     //private JLabel lab2 = new JLabel("�ˣ�");
     private JLabel lab9 = new JLabel("请先登录！！！");
@@ -57,7 +57,7 @@ public class FrmCusDetail extends JDialog implements ActionListener{
             phone.setText(users.getCus_phone());
             email.setText(users.getCus_email());
             city.setText(users.getCus_city());
-            time.setText(users.getCus_reg_time()+"");
+            time.setText(users.getCus_vip_end_time()+"");
             vip.setText(users.getCus_vip());
             
         } catch (BaseException e) {
